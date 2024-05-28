@@ -28,7 +28,7 @@ const App = () => {
 
       try {
         const response = await axios.get('https://api.unsplash.com/search/photos', {
-          params: { query, page, per_page: 12, },
+          params: { query, page, per_page: 12 },
           headers: {
             Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}`,
           },
@@ -44,7 +44,7 @@ const App = () => {
     };
 
     fetchImages();
-  }, [query, page]); 
+  }, [query, page]);
 
   const handleSearchSubmit = (searchQuery) => {
     setQuery(searchQuery);
@@ -53,10 +53,9 @@ const App = () => {
   };
 
   const handleLoadMore = () => {
-    setPage(prevPage => prevPage + 1); 
+    setPage(prevPage => prevPage + 1);
   };
 
-  // 1
   const openModal = (imageURL) => {
     setLargeImageURL(imageURL);
     setShowModal(true);
