@@ -18,6 +18,7 @@ const App = () => {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [largeImageURL, setLargeImageURL] = useState('');
+  const [noMoreImages, setNoMoreImages] = useState(false);
 
   useEffect(() => {
     if (!query) return;
@@ -25,6 +26,7 @@ const App = () => {
     const fetchImages = async () => {
       setLoading(true);
       setError(null);
+      setNoMoreImages(false);
 
       try {
         const response = await axios.get('https://api.unsplash.com/search/photos', {
@@ -34,8 +36,19 @@ const App = () => {
           },
         });
 
-        const newImages = response.data.results.filter(result => !images.find(image => image.id === result.id));
-        setImages(prevImages => [...prevImages, ...newImages]);
+        if (response.status === 200) {
+          const newImages = response.data.results.filter(result => !images.find(image => image.id === result.id));
+
+          if (newImages.length === 0 && images.length > 0) {
+            setNoMoreImages(true);
+          } else if (newImages.length === 0 && images.length === 0) {
+            setError('No images found for this query.');
+          } else {
+            setImages(prevImages => [...prevImages, ...newImages]);
+          }
+        } else {
+          setError('Something went wrong. Please try again.');
+        }
       } catch (err) {
         setError('Something went wrong. Please try again.');
       } finally {
@@ -50,6 +63,8 @@ const App = () => {
     setQuery(searchQuery);
     setPage(1);
     setImages([]);
+    setNoMoreImages(false);
+    setError(null);
   };
 
   const handleLoadMore = () => {
@@ -70,9 +85,10 @@ const App = () => {
     <div className={css.app}>
       <SearchBar onSubmit={handleSearchSubmit} />
       {error && <ErrorMessage message={error} />}
+      {noMoreImages && !error && <ErrorMessage message="No more images found." />}
       <ImageGallery images={images} onImageClick={openModal} />
       {loading && <Loader />}
-      {images.length > 0 && !loading && <LoadMoreBtn onClick={handleLoadMore} />}
+      {images.length > 0 && !loading && !error && !noMoreImages && <LoadMoreBtn onClick={handleLoadMore} />}
       {showModal && <ImageModal imageURL={largeImageURL} onClose={closeModal} />}
     </div>
   );

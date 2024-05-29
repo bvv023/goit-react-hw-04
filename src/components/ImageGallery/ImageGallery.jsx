@@ -9,9 +9,9 @@ const ImageGallery = ({ images, onImageClick }) => {
         <li key={id} className={css.galleryItem}>
           <ImageCard
             webformatURL={urls.small}
-            largeImageURL={urls.full}
+            largeImageURL={urls.regular}
             tags={alt_description}
-            onClick={() => onImageClick(urls.full)}
+            onClick={() => onImageClick(urls.regular)}
           />
         </li>
       ))}
@@ -25,7 +25,7 @@ ImageGallery.propTypes = {
       id: PropTypes.string.isRequired,
       urls: PropTypes.shape({
         small: PropTypes.string.isRequired,
-        full: PropTypes.string.isRequired,
+        regular: PropTypes.string.isRequired,
       }).isRequired,
       alt_description: PropTypes.string,
     })

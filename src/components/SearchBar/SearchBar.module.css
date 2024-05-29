@@ -1,8 +1,13 @@
 .searchbar {
-  background-color: #f2f2f2;
+  background: linear-gradient(to right, #ff69b4, #6495ed, #a9a9a9);
   padding: 20px;
   text-align: center;
   margin-bottom: 15px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
 .searchForm {
@@ -19,10 +24,13 @@
 }
 
 .searchButton {
+  display: flex;
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  justify-content: center;
+  align-items: center;
 }

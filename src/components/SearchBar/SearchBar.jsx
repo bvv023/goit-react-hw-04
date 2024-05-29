@@ -2,6 +2,8 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
 import css from './SearchBar.module.css';
+import { BsSearch } from "react-icons/bs";
+
 
 const SearchBar = ({ onSubmit }) => {
   const [inputValue, setInputValue] = useState('');
@@ -32,7 +34,7 @@ const SearchBar = ({ onSubmit }) => {
           onChange={handleChange}
           className={css.searchInput}
         />
-        <button type="submit" className={css.searchButton}>Search</button>
+        <button type="submit" className={css.searchButton}><BsSearch />&nbsp;Search</button>
       </form>
     </header>
   );

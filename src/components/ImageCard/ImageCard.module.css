@@ -3,12 +3,12 @@
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
-  width: 360px;
-  height: 360px;
+  width: 250px;
+  height: 150px;
 }
 
-.card img {
+.image {
   object-fit: cover;
-  width: 360px;
-  height: 360px;
+  width: 250px;
+  height: 150px;
 }
