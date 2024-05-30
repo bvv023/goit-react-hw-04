@@ -1,16 +1,7 @@
-import PropTypes from 'prop-types';
-import css from './ErrorMessage.module.css';
+import toast from 'react-hot-toast';
 
-const ErrorMessage = ({ message }) => {
-  return (
-    <div className={css.error}>
-      <p>{message}</p>
-    </div>
-  );
-};
-
-ErrorMessage.propTypes = {
-  message: PropTypes.string.isRequired,
+const ErrorMessage = (message) => {
+  toast.error(message);
 };
 
 export default ErrorMessage;

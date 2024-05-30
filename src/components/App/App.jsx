@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import css from './App.module.css';
 import SearchBar from '../SearchBar/SearchBar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Loader from '../Loader/Loader';
-import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageModal from '../ImageModal/ImageModal';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import { Toaster } from 'react-hot-toast';
 
 const UNSPLASH_ACCESS_KEY = '3OlXvuZbRHK9s2Dy0FM9kwuZNu-SdkMmsN9gymFhE8k';
 
@@ -15,22 +16,22 @@ const App = () => {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [largeImageURL, setLargeImageURL] = useState('');
   const [noMoreImages, setNoMoreImages] = useState(false);
+
+  const firstNewImageRef = useRef(null);
 
   useEffect(() => {
     if (!query) return;
 
     const fetchImages = async () => {
       setLoading(true);
-      setError(null);
       setNoMoreImages(false);
 
       try {
         const response = await axios.get('https://api.unsplash.com/search/photos', {
-          params: { query, page, per_page: 12 },
+          params: { query, page, per_page: 14 },
           headers: {
             Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}`,
           },
@@ -41,16 +42,17 @@ const App = () => {
 
           if (newImages.length === 0 && images.length > 0) {
             setNoMoreImages(true);
+            ErrorMessage('No more images found.');
           } else if (newImages.length === 0 && images.length === 0) {
-            setError('No images found for this query.');
+            ErrorMessage('No images found for this query.');
           } else {
             setImages(prevImages => [...prevImages, ...newImages]);
           }
         } else {
-          setError('Something went wrong. Please try again.');
+          ErrorMessage('Something went wrong. Please try again.');
         }
       } catch (err) {
-        setError('Something went wrong. Please try again.');
+        ErrorMessage('Something went wrong. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -59,12 +61,17 @@ const App = () => {
     fetchImages();
   }, [query, page]);
 
+  useEffect(() => {
+    if (page > 1 && firstNewImageRef.current) {
+      firstNewImageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [images]);
+
   const handleSearchSubmit = (searchQuery) => {
     setQuery(searchQuery);
     setPage(1);
     setImages([]);
     setNoMoreImages(false);
-    setError(null);
   };
 
   const handleLoadMore = () => {
@@ -84,12 +91,11 @@ const App = () => {
   return (
     <div className={css.app}>
       <SearchBar onSubmit={handleSearchSubmit} />
-      {error && <ErrorMessage message={error} />}
-      {noMoreImages && !error && <ErrorMessage message="No more images found." />}
-      <ImageGallery images={images} onImageClick={openModal} />
+      <ImageGallery images={images} onImageClick={openModal} firstNewImageRef={firstNewImageRef} />
       {loading && <Loader />}
-      {images.length > 0 && !loading && !error && !noMoreImages && <LoadMoreBtn onClick={handleLoadMore} />}
+      {images.length > 0 && !loading && !noMoreImages && <LoadMoreBtn onClick={handleLoadMore} />}
       {showModal && <ImageModal imageURL={largeImageURL} onClose={closeModal} />}
+      <Toaster />
     </div>
   );
 };

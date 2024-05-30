@@ -2,11 +2,15 @@ import PropTypes from 'prop-types';
 import css from './ImageGallery.module.css';
 import ImageCard from '../ImageCard/ImageCard';
 
-const ImageGallery = ({ images, onImageClick }) => {
+const ImageGallery = ({ images, onImageClick, firstNewImageRef }) => {
   return (
     <ul className={css.gallery}>
-      {images.map(({ id, urls, alt_description }) => (
-        <li key={id} className={css.galleryItem}>
+      {images.map(({ id, urls, alt_description }, index) => (
+        <li
+          key={id}
+          className={css.galleryItem}
+          ref={index === images.length - 12 ? firstNewImageRef : null}
+        >
           <ImageCard
             webformatURL={urls.small}
             largeImageURL={urls.regular}
@@ -31,6 +35,7 @@ ImageGallery.propTypes = {
     })
   ).isRequired,
   onImageClick: PropTypes.func.isRequired,
+  firstNewImageRef: PropTypes.object.isRequired,
 };
 
 export default ImageGallery;
