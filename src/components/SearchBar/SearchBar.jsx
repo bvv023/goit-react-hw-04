@@ -4,7 +4,6 @@ import toast from 'react-hot-toast';
 import css from './SearchBar.module.css';
 import { BsSearch } from "react-icons/bs";
 
-
 const SearchBar = ({ onSubmit }) => {
   const [inputValue, setInputValue] = useState('');
 
