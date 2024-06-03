@@ -19,6 +19,7 @@ const App = () => {
   const [showModal, setShowModal] = useState(false);
   const [largeImageURL, setLargeImageURL] = useState('');
   const [noMoreImages, setNoMoreImages] = useState(false);
+  const [error, setError] = useState('');
 
   const firstNewImageRef = useRef(null);
 
@@ -28,6 +29,7 @@ const App = () => {
     const fetchImages = async () => {
       setLoading(true);
       setNoMoreImages(false);
+      setError('');
 
       try {
         const response = await axios.get('https://api.unsplash.com/search/photos', {
@@ -42,17 +44,17 @@ const App = () => {
 
           if (newImages.length === 0 && images.length > 0) {
             setNoMoreImages(true);
-            ErrorMessage('No more images found.');
+            setError('No more images found.');
           } else if (newImages.length === 0 && images.length === 0) {
-            ErrorMessage('No images found for this query.');
+            setError('No images found for this query.');
           } else {
             setImages(prevImages => [...prevImages, ...newImages]);
           }
         } else {
-          ErrorMessage('Something went wrong. Please try again.');
+          setError('Something went wrong. Please try again.');
         }
       } catch (err) {
-        ErrorMessage('Something went wrong. Please try again.');
+        setError('Something went wrong. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -95,6 +97,7 @@ const App = () => {
       {loading && <Loader />}
       {images.length > 0 && !loading && !noMoreImages && <LoadMoreBtn onClick={handleLoadMore} />}
       {showModal && <ImageModal imageURL={largeImageURL} onClose={closeModal} />}
+      {error && <ErrorMessage message={error} />}
       <Toaster />
     </div>
   );
